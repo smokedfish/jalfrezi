@@ -1,7 +1,8 @@
-package org.jalfrezi;
+package org.jalfrezi.share_scrape;
 
 import java.io.IOException;
 
+import org.jalfrezi.share_scrape.Jalfrezi;
 import org.junit.Assert;
 import org.junit.Test;
 

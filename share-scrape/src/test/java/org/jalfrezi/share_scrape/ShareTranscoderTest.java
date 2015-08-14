@@ -1,11 +1,13 @@
-package org.jalfrezi;
+package org.jalfrezi.share_scrape;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Date;
 
-import org.jalfrezi.Share.SharePrice;
+import org.jalfrezi.share_scrape.Share;
+import org.jalfrezi.share_scrape.ShareTranscoder;
+import org.jalfrezi.share_scrape.Share.SharePrice;
 import org.junit.Assert;
 import org.junit.Test;
 

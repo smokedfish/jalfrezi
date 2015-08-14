@@ -1,4 +1,4 @@
-package org.jalfrezi;
+package org.jalfrezi.share_scrape;
 
 import java.util.Date;
 import java.util.SortedMap;

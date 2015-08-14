@@ -8,10 +8,22 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>share-scrape</artifactId>
-	<name>share-scrape</name>
+	<artifactId>yahoo-client</artifactId>
+	<name>yahoo-client</name>
 
 	<dependencies>
+
+		<dependency>
+			<groupId>org.jalfrezi</groupId>
+			<artifactId>datamodel</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-csv</artifactId>
+			<version>2.5.3</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.jsoup</groupId>
@@ -19,25 +31,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-		</dependency>
-
-		<!-- Test -->
-
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>2.2</version>
 		</dependency>
 
 	</dependencies>

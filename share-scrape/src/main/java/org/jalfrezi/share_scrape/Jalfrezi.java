@@ -1,4 +1,4 @@
-package org.jalfrezi;
+package org.jalfrezi.share_scrape;
 
 import java.io.File;
 import java.io.FileReader;
@@ -7,9 +7,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Calendar;
-import java.util.Date;
 
-import org.jalfrezi.Share.SharePrice;
+import org.jalfrezi.share_scrape.Share.SharePrice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

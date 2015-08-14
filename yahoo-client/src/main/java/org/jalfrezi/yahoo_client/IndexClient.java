@@ -1,0 +1,60 @@
+package org.jalfrezi.yahoo_client;
+
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jalfrezi.datamodel.Index;
+import org.jalfrezi.datamodel.Share;
+import org.jalfrezi.datamodel.SharePrice;
+import org.jalfrezi.datamodel.id.IndexId;
+import org.jalfrezi.datamodel.id.ShareId;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+public class IndexClient {
+	private final String URL_BASE = "https://uk.finance.yahoo.com";
+
+	Index getIndex(IndexId indexId) {
+		return null;
+	}
+
+	public List<ShareId> getShareIds(IndexId indexId) throws IOException {
+		List<ShareId> symbols = new ArrayList<>();
+		String query = "/q/cp?s=" + URLEncoder.encode(indexId.getId(), "UTF-8");
+		while(query != null && query.length() > 0) {
+			URL url = new URL(URL_BASE + query);
+			Document doc = Jsoup.parse(url, 3000);
+			Elements nexts = doc.getElementsContainingOwnText("Next");
+			query = nexts.get(0).attr("href");
+
+			Elements yfncTabledata1 = doc.getElementsByClass("yfnc_tabledata1");
+			for (Element row : yfncTabledata1) {
+				Elements hrefs = row.getElementsByTag("a");
+				if (hrefs != null && hrefs.size() > 0) {
+					String symbol = hrefs.text().trim();
+					symbols.add(new ShareId(symbol));
+				}
+			}
+		}
+		return symbols;
+	}
+
+	public static void main(String[] args) throws IOException {
+		IndexId ftse100 = new IndexId("^FTSE");
+		IndexId ftse250 = new IndexId("^FTMC");
+		IndexClient indexClient = new IndexClient();
+		ShareClient shareClient = new ShareClient();
+//		List<Share> shares = shareClient.getShares(indexClient.getShareIds(ftse250));
+//		System.out.println(shares);
+		List<SharePrice> sharePrices = shareClient.getSharePrices(new ShareId("RSW.L"));
+		for (SharePrice sharePrice : sharePrices) {
+			System.out.println(sharePrice);
+		}
+		System.out.println(sharePrices.size());
+	}
+}
