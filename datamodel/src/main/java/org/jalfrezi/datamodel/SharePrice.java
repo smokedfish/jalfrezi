@@ -3,6 +3,7 @@ package org.jalfrezi.datamodel;
 import java.util.Date;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 
 public class SharePrice {
 	private Date date;
@@ -72,15 +73,47 @@ public class SharePrice {
 		this.adjClose = adjClose;
 	}
 
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(date,
+				open,
+				close,
+				high,
+				low,
+				volume,
+				adjClose);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		SharePrice that = (SharePrice) obj;
+		return Objects.equal(this.date, that.date)
+				&& Objects.equal(this.open, that.open)
+				&& Objects.equal(this.close, that.close)
+				&& Objects.equal(this.high, that.high)
+				&& Objects.equal(this.low, that.low)
+				&& Objects.equal(this.volume, that.volume)
+				&& Objects.equal(this.adjClose, that.adjClose);
+	}
+
 	public String toString() {
 		return MoreObjects.toStringHelper(this.getClass())
-	            .add("date", date)
-	            .add("open", open)
-	            .add("close", close)
-	            .add("high", high)
-	            .add("low", low)
-	            .add("volume", volume)
-	            .add("adjClose", adjClose)
-	            .toString();
+				.add("date", date)
+				.add("open", open)
+				.add("close", close)
+				.add("high", high)
+				.add("low", low)
+				.add("volume", volume)
+				.add("adjClose", adjClose)
+				.toString();
 	}
 }

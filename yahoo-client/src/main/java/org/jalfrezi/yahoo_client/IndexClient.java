@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jalfrezi.datamodel.Index;
-import org.jalfrezi.datamodel.Share;
-import org.jalfrezi.datamodel.SharePrice;
 import org.jalfrezi.datamodel.id.IndexId;
 import org.jalfrezi.datamodel.id.ShareId;
 import org.jsoup.Jsoup;
@@ -42,19 +40,5 @@ public class IndexClient {
 			}
 		}
 		return symbols;
-	}
-
-	public static void main(String[] args) throws IOException {
-		IndexId ftse100 = new IndexId("^FTSE");
-		IndexId ftse250 = new IndexId("^FTMC");
-		IndexClient indexClient = new IndexClient();
-		ShareClient shareClient = new ShareClient();
-//		List<Share> shares = shareClient.getShares(indexClient.getShareIds(ftse250));
-//		System.out.println(shares);
-		List<SharePrice> sharePrices = shareClient.getSharePrices(new ShareId("RSW.L"));
-		for (SharePrice sharePrice : sharePrices) {
-			System.out.println(sharePrice);
-		}
-		System.out.println(sharePrices.size());
 	}
 }

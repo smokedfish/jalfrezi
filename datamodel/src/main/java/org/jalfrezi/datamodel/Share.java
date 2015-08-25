@@ -4,6 +4,7 @@ import org.jalfrezi.datamodel.id.IndexId;
 import org.jalfrezi.datamodel.id.ShareId;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 
 public class Share {
 	private IndexId indexId;
@@ -17,24 +18,49 @@ public class Share {
 		return indexId;
 	}
 
-	public void setIndexId(IndexId indexId) {
+	public Share setIndexId(IndexId indexId) {
 		this.indexId = indexId;
+		return this;
 	}
 
 	public ShareId getShareId() {
 		return shareId;
 	}
 
-	public void setShareId(ShareId shareId) {
+	public Share setShareId(ShareId shareId) {
 		this.shareId = shareId;
+		return this;
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
+	public Share setName(String name) {
 		this.name = name;
+		return this;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(indexId, shareId, name);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		Share that = (Share) obj;
+		return Objects.equal(this.indexId, that.indexId)
+				&& Objects.equal(this.shareId, that.shareId)
+				&& Objects.equal(this.name, that.name);
 	}
 
 	public String toString() {

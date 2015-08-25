@@ -3,11 +3,9 @@ package org.jalfrezi.yahoo_client;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.jalfrezi.datamodel.Share;
-import org.jalfrezi.datamodel.SharePrice;
 import org.jalfrezi.datamodel.id.ShareId;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -25,17 +23,6 @@ public class ShareClient {
 	        .addColumn("name") //n
 	        .build();
 
-	private CsvSchema sharePriceSchema = CsvSchema.builder()
-	        .addColumn("date")
-	        .addColumn("open")
-	        .addColumn("high")
-	        .addColumn("low")
-	        .addColumn("close")
-	        .addColumn("volume")
-	        .addColumn("adjClose")
-	        .build()
-	        .withHeader();
-
 	public List<Share> getShares(List<ShareId> shareIds) throws JsonProcessingException, IOException {
 		List<Share> shares = new ArrayList<>(shareIds.size());
 		for(int s = 0, e = chunk; s < shareIds.size(); s += chunk, e += chunk) {
@@ -45,12 +32,5 @@ public class ShareClient {
 			Iterators.addAll(shares, mapper.reader(Share.class).with(shareSchema).<Share>readValues(url));
 		}
 		return shares;
-	}
-
-	public List<SharePrice> getSharePrices(ShareId shareId, Date startDate, Date endDate) throws JsonProcessingException, IOException {
-		List<SharePrice> sharePrices = new ArrayList<>();
-		URL url = new URL("http://ichart.yahoo.com/table.csv?s=" + shareId);
-		Iterators.addAll(sharePrices, mapper.reader(SharePrice.class).with(sharePriceSchema).<SharePrice>readValues(url));
-		return sharePrices;
 	}
 }
