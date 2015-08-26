@@ -10,11 +10,11 @@ import org.jalfrezi.datamodel.Index;
 import org.jalfrezi.datamodel.id.IndexId;
 
 public class IndexDao {
-	private static final String TABLE_STATEMENT = "CREATE TABLE APP.INDEX (id VARCHAR(30) NOT NULL, name VARCHAR(30), PRIMARY KEY (id))";
-	private static final String CREATE_STATEMENT = "INSERT INTO APP.INDEX (id, name) VALUES (?, ?)";
-	private static final String READ_STATEMENT = "SELECT name FROM APP.INDEX WHERE id = ?";
-	private static final String UPDATE_STATEMENT = "UPDATE APP.INDEX SET name = ? WHERE id = ?";
-	private static final String DELETE_STATEMENT = "DELETE FROM APP.INDEX WHERE id = ?";
+	private static final String TABLE_STATEMENT = "CREATE TABLE APP.INDEX (index_id VARCHAR(30) NOT NULL, name VARCHAR(30), PRIMARY KEY (index_id))";
+	private static final String CREATE_STATEMENT = "INSERT INTO APP.INDEX (index_id, name) VALUES (?, ?)";
+	private static final String READ_STATEMENT = "SELECT name FROM APP.INDEX WHERE index_id = ?";
+	private static final String UPDATE_STATEMENT = "UPDATE APP.INDEX SET name = ? WHERE index_id = ?";
+	private static final String DELETE_STATEMENT = "DELETE FROM APP.INDEX WHERE index_id = ?";
 
 	private PreparedStatement createStatement;
 	private PreparedStatement updateStatement;

@@ -2,10 +2,15 @@ package org.jalfrezi.datamodel;
 
 import java.util.Date;
 
+import org.jalfrezi.datamodel.id.ShareId;
+import org.jalfrezi.datamodel.id.SharePriceId;
+
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public class SharePrice {
+	private ShareId shareId;
+	private SharePriceId sharePriceId;
 	private Date date;
 	private double open;
 	private double close;
@@ -17,65 +22,92 @@ public class SharePrice {
 	public SharePrice() {
 	}
 
+	public ShareId getShareId() {
+		return shareId;
+	}
+
+	public SharePrice setShareId(ShareId shareId) {
+		this.shareId = shareId;
+		return this;
+	}
+	
+	public SharePriceId getSharePriceId() {
+		return sharePriceId;
+	}
+
+	public SharePrice setSharePriceId(SharePriceId sharePriceId) {
+		this.sharePriceId = sharePriceId;
+		return this;
+	}
+
 	public Date getDate() {
 		return date;
 	}
 
-	public void setDate(Date date) {
+	public SharePrice setDate(Date date) {
 		this.date = date;
+		return this;
+		
 	}
 
 	public double getOpen() {
 		return open;
 	}
 
-	public void setOpen(double open) {
+	public SharePrice setOpen(double open) {
 		this.open = open;
+		return this;
 	}
 
 	public double getClose() {
 		return close;
 	}
 
-	public void setClose(double close) {
+	public SharePrice setClose(double close) {
 		this.close = close;
+		return this;
 	}
 
 	public double getHigh() {
 		return high;
 	}
 
-	public void setHigh(double high) {
+	public SharePrice setHigh(double high) {
 		this.high = high;
+		return this;
 	}
 
 	public double getLow() {
 		return low;
 	}
 
-	public void setLow(double low) {
+	public SharePrice setLow(double low) {
 		this.low = low;
+		return this;
 	}
 
 	public int getVolume() {
 		return volume;
 	}
 
-	public void setVolume(int volume) {
+	public SharePrice setVolume(int volume) {
 		this.volume = volume;
+		return this;
 	}
 
 	public double getAdjClose() {
 		return adjClose;
 	}
 
-	public void setAdjClose(double adjClose) {
+	public SharePrice setAdjClose(double adjClose) {
 		this.adjClose = adjClose;
+		return this;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(date,
+		return Objects.hashCode(sharePriceId,
+				date,
 				open,
 				close,
 				high,
@@ -96,7 +128,8 @@ public class SharePrice {
 			return false;
 		}
 		SharePrice that = (SharePrice) obj;
-		return Objects.equal(this.date, that.date)
+		return Objects.equal(this.sharePriceId, that.sharePriceId)
+				&& Objects.equal(this.date, that.date)
 				&& Objects.equal(this.open, that.open)
 				&& Objects.equal(this.close, that.close)
 				&& Objects.equal(this.high, that.high)
@@ -107,6 +140,7 @@ public class SharePrice {
 
 	public String toString() {
 		return MoreObjects.toStringHelper(this.getClass())
+				.add("sharePriceId", sharePriceId)
 				.add("date", date)
 				.add("open", open)
 				.add("close", close)

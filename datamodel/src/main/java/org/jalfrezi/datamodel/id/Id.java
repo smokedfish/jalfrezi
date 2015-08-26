@@ -29,7 +29,7 @@ public class Id<T> {
         }
 
         final Id<?> other = (Id<?>) obj;
-        return Objects.equal(getClass(), other.getClass()) && Objects.equal(this.id, other.id);
+        return Objects.equal(this.id, other.id);
     }
 
     @Override

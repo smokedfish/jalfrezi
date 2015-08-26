@@ -11,11 +11,11 @@ import org.jalfrezi.datamodel.id.IndexId;
 import org.jalfrezi.datamodel.id.ShareId;
 
 public class ShareDao {
-	private static final String TABLE_STATEMENT = "CREATE TABLE APP.SHARE (id VARCHAR(30) NOT NULL, name VARCHAR(100), index_id VARCHAR(30) NOT NULL, PRIMARY KEY (id))";
-	private static final String CREATE_STATEMENT = "INSERT INTO APP.SHARE (id, name, index_id) VALUES (?, ?, ?)";
-	private static final String READ_STATEMENT = "SELECT name, index_id FROM APP.SHARE WHERE id = ?";
-	private static final String UPDATE_STATEMENT = "UPDATE APP.SHARE SET name = ?, SET index_id = ?  WHERE id = ?";
-	private static final String DELETE_STATEMENT = "DELETE FROM APP.SHARE WHERE id = ?";
+	private static final String TABLE_STATEMENT = "CREATE TABLE APP.SHARE (share_id VARCHAR(30) NOT NULL, name VARCHAR(100), index_id VARCHAR(30) NOT NULL, PRIMARY KEY (share_id))";
+	private static final String CREATE_STATEMENT = "INSERT INTO APP.SHARE (share_id, name, index_id) VALUES (?, ?, ?)";
+	private static final String READ_STATEMENT = "SELECT name, index_id FROM APP.SHARE WHERE share_id = ?";
+	private static final String UPDATE_STATEMENT = "UPDATE APP.SHARE SET name = ?, index_id = ?  WHERE share_id = ?";
+	private static final String DELETE_STATEMENT = "DELETE FROM APP.SHARE WHERE share_id = ?";
 
 	private PreparedStatement createStatement;
 	private PreparedStatement updateStatement;
@@ -57,9 +57,7 @@ public class ShareDao {
 			return new Share()
 			.setShareId(shareId)
 			.setName(resultSet.getString(1))
-			.setIndexId(new IndexId(resultSet.getString(2)));
-
-		}
+			.setIndexId(new IndexId(resultSet.getString(2)));}
 		return null;
 	}
 
@@ -67,6 +65,7 @@ public class ShareDao {
 		updateStatement.clearParameters();
 		updateStatement.setString(1, share.getName());
 		updateStatement.setString(2, share.getIndexId().getId());
+		updateStatement.setString(3, share.getShareId().getId());
 		updateStatement.executeUpdate();
 	}
 
