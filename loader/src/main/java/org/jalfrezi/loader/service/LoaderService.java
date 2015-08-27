@@ -1,5 +1,6 @@
 package org.jalfrezi.loader.service;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.annotation.PostConstruct;
@@ -10,6 +11,7 @@ import org.jalfrezi.dao.IndexDao;
 import org.jalfrezi.dao.ShareDao;
 import org.jalfrezi.dao.SharePriceDao;
 import org.jalfrezi.datamodel.Index;
+import org.jalfrezi.datamodel.Share;
 import org.jalfrezi.datamodel.id.IndexId;
 import org.jalfrezi.yahoo_client.IndexClient;
 import org.jalfrezi.yahoo_client.ShareClient;
@@ -37,13 +39,18 @@ public class LoaderService {
 	}
 	
 	@PostConstruct
-	public void init() throws SQLException {
-		Index index = indexDao.read(IndexId.FTSE100);
+	public void init() throws SQLException, IOException {
+		IndexId indexId = IndexId.FTSE100;
+		
+		Index index = indexDao.read(indexId);
 		if (index == null) {
-			System.out.println("None create a new one");
-			index = new Index().setIndexId(IndexId.FTSE100).setName("rob");
+			index = new Index().setIndexId(indexId).setName("FTSE100");
 			indexDao.create(index);
 		}
-		System.out.println(index.getIndexId() + " " + index.getName());
+		System.out.println(index);
+		for (Share share : shareClient.getShares(indexId, indexClient.getShareIds(indexId))) {
+			shareDao.create(share);
+			System.out.println(share);
+		}
 	}
 }

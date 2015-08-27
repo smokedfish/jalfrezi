@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -30,6 +31,7 @@ public class ShareDao extends AbstractBaseDao {
 		super(dbConnection);
 	}
 
+	@PostConstruct
 	public void init() throws SQLException {
 		createTable(TABLE_STATEMENT);
 		createStatement = prepareStatement(CREATE_STATEMENT);
