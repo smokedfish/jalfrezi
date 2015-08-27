@@ -5,6 +5,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Named;
+
 import org.jalfrezi.datamodel.Share;
 import org.jalfrezi.datamodel.id.ShareId;
 
@@ -14,6 +16,7 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Iterators;
 
+@Named
 public class ShareClient {
 	private final int chunk = 50;
 	private final CsvMapper mapper = new CsvMapper();
@@ -23,6 +26,9 @@ public class ShareClient {
 	        .addColumn("name") //n
 	        .build();
 
+	public ShareClient() {
+	}
+	
 	public List<Share> getShares(List<ShareId> shareIds) throws JsonProcessingException, IOException {
 		List<Share> shares = new ArrayList<>(shareIds.size());
 		for(int s = 0, e = chunk; s < shareIds.size(); s += chunk, e += chunk) {

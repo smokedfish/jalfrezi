@@ -13,11 +13,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class ShareDaoTest extends DerbyTestHelper {
-	private ShareDao shareDao = new ShareDao();
+	private ShareDao shareDao = new ShareDao(connection);
     
 	@Before
 	public void before() throws ClassNotFoundException, SQLException, IOException {
-		shareDao.init(connection);
+		shareDao.init();
 	}
 
 	@Test

@@ -4,13 +4,16 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.jalfrezi.datamodel.Share;
 import org.jalfrezi.datamodel.id.IndexId;
 import org.jalfrezi.datamodel.id.ShareId;
 
-public class ShareDao {
+@Named
+public class ShareDao extends AbstractBaseDao {
 	private static final String TABLE_STATEMENT = "CREATE TABLE APP.SHARE (share_id VARCHAR(30) NOT NULL, name VARCHAR(100), index_id VARCHAR(30) NOT NULL, PRIMARY KEY (share_id))";
 	private static final String CREATE_STATEMENT = "INSERT INTO APP.SHARE (share_id, name, index_id) VALUES (?, ?, ?)";
 	private static final String READ_STATEMENT = "SELECT name, index_id FROM APP.SHARE WHERE share_id = ?";
@@ -22,23 +25,17 @@ public class ShareDao {
 	private PreparedStatement readStatement;
 	private PreparedStatement deleteStatement;
 
-	public ShareDao() {
+	@Inject
+	public ShareDao(Connection dbConnection) {
+		super(dbConnection);
 	}
 
-	public void init(Connection dbConnection) throws SQLException {
-		try {
-			Statement statement = dbConnection.createStatement();
-			statement.execute(TABLE_STATEMENT);
-		}
-		catch (SQLException e) {
-			if (!DerbyUtils.tableAlreadyExists(e)) {
-				throw e;
-			}
-		}
-		createStatement = dbConnection.prepareStatement(CREATE_STATEMENT);
-		readStatement = dbConnection.prepareStatement(READ_STATEMENT);
-		updateStatement = dbConnection.prepareStatement(UPDATE_STATEMENT);
-		deleteStatement = dbConnection.prepareStatement(DELETE_STATEMENT);
+	public void init() throws SQLException {
+		createTable(TABLE_STATEMENT);
+		createStatement = prepareStatement(CREATE_STATEMENT);
+		readStatement = prepareStatement(READ_STATEMENT);
+		updateStatement = prepareStatement(UPDATE_STATEMENT);
+		deleteStatement = prepareStatement(DELETE_STATEMENT);
 	}
 
 	public void create(Share share) throws SQLException {

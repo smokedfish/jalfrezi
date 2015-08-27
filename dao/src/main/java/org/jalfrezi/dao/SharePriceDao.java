@@ -4,14 +4,17 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Date;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.jalfrezi.datamodel.SharePrice;
 import org.jalfrezi.datamodel.id.ShareId;
 import org.jalfrezi.datamodel.id.SharePriceId;
 
-public class SharePriceDao {
+@Named
+public class SharePriceDao extends AbstractBaseDao {
 	private static final String TABLE_STATEMENT = "CREATE TABLE APP.SHARE_PRICE (share_id VARCHAR(30) NOT NULL, share_price_id VARCHAR(30) NOT NULL, date BIGINT, high DOUBLE, low DOUBLE, openx DOUBLE, closex DOUBLE, volume int, adj_close DOUBLE, PRIMARY KEY (share_id, share_price_id))";
 	private static final String CREATE_STATEMENT = "INSERT INTO APP.SHARE_PRICE (share_id, share_price_id, date, high, low, openx, closex, volume, adj_close) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	private static final String READ_STATEMENT = "SELECT date, high, low, openx, closex, volume, adj_close FROM APP.SHARE_PRICE WHERE share_id = ? AND share_price_id = ?";
@@ -23,23 +26,17 @@ public class SharePriceDao {
 	private PreparedStatement readStatement;
 	private PreparedStatement deleteStatement;
 
-	public SharePriceDao() {
+	@Inject
+	public SharePriceDao(Connection dbConnection) {
+		super(dbConnection);
 	}
 
-	public void init(Connection dbConnection) throws SQLException {
-		try {
-			Statement statement = dbConnection.createStatement();
-			statement.execute(TABLE_STATEMENT);
-		}
-		catch (SQLException e) {
-			if (!DerbyUtils.tableAlreadyExists(e)) {
-				throw e;
-			}
-		}
-		createStatement = dbConnection.prepareStatement(CREATE_STATEMENT);
-		readStatement = dbConnection.prepareStatement(READ_STATEMENT);
-		updateStatement = dbConnection.prepareStatement(UPDATE_STATEMENT);
-		deleteStatement = dbConnection.prepareStatement(DELETE_STATEMENT);
+	public void init() throws SQLException {
+		createTable(TABLE_STATEMENT);
+		createStatement = prepareStatement(CREATE_STATEMENT);
+		readStatement = prepareStatement(READ_STATEMENT);
+		updateStatement = prepareStatement(UPDATE_STATEMENT);
+		deleteStatement = prepareStatement(DELETE_STATEMENT);
 	}
 
 	public void create(SharePrice sharePrice) throws SQLException {
@@ -75,8 +72,6 @@ public class SharePriceDao {
 		}
 		return null;
 	}
-
-//"UPDATE APP.SHARE_PRICE SET date = ?, high = ?, low = ?, openx = ?, closex = ?, volume = ?, adj_close = ? WHERE share_id = ? AND share_price_id = ?";
 
 	public void update(SharePrice sharePrice) throws SQLException {
 		updateStatement.clearParameters();

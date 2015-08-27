@@ -5,6 +5,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Named;
+
 import org.jalfrezi.datamodel.SharePrice;
 import org.jalfrezi.datamodel.id.ShareId;
 import org.joda.time.DateTime;
@@ -14,6 +16,7 @@ import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.google.common.collect.Iterators;
 
+@Named
 public class SharePriceClient {
 	private final CsvMapper mapper = new CsvMapper();
 
@@ -28,6 +31,9 @@ public class SharePriceClient {
 	        .build()
 	        .withHeader();
 
+	public SharePriceClient() {
+	}
+	
 	public List<SharePrice> getSharePrices(ShareId shareId, DateTime startDate, DateTime endDate) throws JsonProcessingException, IOException {
 		List<SharePrice> sharePrices = new ArrayList<>();
 		StringBuilder sb = new StringBuilder();

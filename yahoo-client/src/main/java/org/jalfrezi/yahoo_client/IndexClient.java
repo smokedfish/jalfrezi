@@ -6,7 +6,8 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jalfrezi.datamodel.Index;
+import javax.inject.Named;
+
 import org.jalfrezi.datamodel.id.IndexId;
 import org.jalfrezi.datamodel.id.ShareId;
 import org.jsoup.Jsoup;
@@ -14,13 +15,13 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+@Named
 public class IndexClient {
 	private final String URL_BASE = "https://uk.finance.yahoo.com";
 
-	Index getIndex(IndexId indexId) {
-		return null;
+	public IndexClient() {
 	}
-
+	
 	public List<ShareId> getShareIds(IndexId indexId) throws IOException {
 		List<ShareId> symbols = new ArrayList<>();
 		String query = "/q/cp?s=" + URLEncoder.encode(indexId.getId(), "UTF-8");

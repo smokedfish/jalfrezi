@@ -4,12 +4,16 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.jalfrezi.datamodel.Index;
 import org.jalfrezi.datamodel.id.IndexId;
 
-public class IndexDao {
+@Named
+public class IndexDao extends AbstractBaseDao {
 	private static final String TABLE_STATEMENT = "CREATE TABLE APP.INDEX (index_id VARCHAR(30) NOT NULL, name VARCHAR(30), PRIMARY KEY (index_id))";
 	private static final String CREATE_STATEMENT = "INSERT INTO APP.INDEX (index_id, name) VALUES (?, ?)";
 	private static final String READ_STATEMENT = "SELECT name FROM APP.INDEX WHERE index_id = ?";
@@ -21,23 +25,18 @@ public class IndexDao {
 	private PreparedStatement readStatement;
 	private PreparedStatement deleteStatement;
 
-	public IndexDao() {
+	@Inject
+	public IndexDao(Connection dbConnection) {
+		super(dbConnection);
 	}
 
-	public void init(Connection dbConnection) throws SQLException {
-		try {
-			Statement statement = dbConnection.createStatement();
-			statement.execute(TABLE_STATEMENT);
-		}
-		catch (SQLException e) {
-			if (!DerbyUtils.tableAlreadyExists(e)) {
-				throw e;
-			}
-		}
-		createStatement = dbConnection.prepareStatement(CREATE_STATEMENT);
-		readStatement = dbConnection.prepareStatement(READ_STATEMENT);
-		updateStatement = dbConnection.prepareStatement(UPDATE_STATEMENT);
-		deleteStatement = dbConnection.prepareStatement(DELETE_STATEMENT);
+	@PostConstruct
+	public void init() throws SQLException {
+		createTable(TABLE_STATEMENT);
+		this.createStatement = prepareStatement(CREATE_STATEMENT);
+		this.readStatement = prepareStatement(READ_STATEMENT);
+		this.updateStatement = prepareStatement(UPDATE_STATEMENT);
+		this.deleteStatement = prepareStatement(DELETE_STATEMENT);
 	}
 
 	public void create(Index index) throws SQLException {

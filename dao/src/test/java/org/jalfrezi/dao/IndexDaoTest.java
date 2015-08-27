@@ -11,12 +11,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class IndexDaoTest extends DerbyTestHelper {
-    private IndexDao indexDao;
+    private IndexDao indexDao = new IndexDao(connection);
     
 	@Before
 	public void before() throws SQLException {
-		indexDao = new IndexDao();
-		indexDao.init(connection);
+		indexDao.init();
 	}
 
 	@Test
