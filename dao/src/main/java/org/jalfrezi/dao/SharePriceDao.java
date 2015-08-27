@@ -12,7 +12,7 @@ import org.jalfrezi.datamodel.id.ShareId;
 import org.jalfrezi.datamodel.id.SharePriceId;
 
 public class SharePriceDao {
-	private static final String TABLE_STATEMENT = "CREATE TABLE APP.SHARE_PRICE (share_id VARCHAR(30) NOT NULL, share_price_id VARCHAR(30) NOT NULL, date BIGINT, high DOUBLE, low DOUBLE, openx DOUBLE, closex DOUBLE, volume int, adj_close DOUBLE, PRIMARY KEY (share_id))";
+	private static final String TABLE_STATEMENT = "CREATE TABLE APP.SHARE_PRICE (share_id VARCHAR(30) NOT NULL, share_price_id VARCHAR(30) NOT NULL, date BIGINT, high DOUBLE, low DOUBLE, openx DOUBLE, closex DOUBLE, volume int, adj_close DOUBLE, PRIMARY KEY (share_id, share_price_id))";
 	private static final String CREATE_STATEMENT = "INSERT INTO APP.SHARE_PRICE (share_id, share_price_id, date, high, low, openx, closex, volume, adj_close) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	private static final String READ_STATEMENT = "SELECT date, high, low, openx, closex, volume, adj_close FROM APP.SHARE_PRICE WHERE share_id = ? AND share_price_id = ?";
 	private static final String UPDATE_STATEMENT = "UPDATE APP.SHARE_PRICE SET date = ?, high = ?, low = ?, openx = ?, closex = ?, volume = ?, adj_close = ? WHERE share_id = ? AND share_price_id = ?";
