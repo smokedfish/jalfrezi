@@ -1,0 +1,3 @@
+"NYQ","a","Agilent Technologies, Inc. Comm"
+"NYQ","b","Barnes Group, Inc. Common Stock"
+"NYQ","c","Citigroup, Inc. Common Stock"
