@@ -3,16 +3,23 @@ package org.jalfrezi.dao;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 import org.jalfrezi.datamodel.Index;
 import org.jalfrezi.datamodel.id.IndexId;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class IndexDaoTest extends DerbyTestHelper {
-    private IndexDao indexDao = new IndexDao(connection);
-    
+public class IndexDaoTest {
+    private static IndexDao indexDao = new IndexDao(DerbyTestHelper.getConnection());
+
+	@BeforeClass
+	public static void beforeClass() throws SQLException, ClassNotFoundException, IOException {
+		indexDao.init();
+	}
+
 	@Before
 	public void before() throws SQLException {
 		indexDao.init();

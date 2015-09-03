@@ -1,9 +1,8 @@
 package org.jalfrezi.datamodel;
 
-import java.util.Date;
-
 import org.jalfrezi.datamodel.id.ShareId;
 import org.jalfrezi.datamodel.id.SharePriceId;
+import org.joda.time.DateTime;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
@@ -11,7 +10,7 @@ import com.google.common.base.Objects;
 public class SharePrice {
 	private ShareId shareId;
 	private SharePriceId sharePriceId;
-	private Date date;
+	private DateTime date;
 	private double open;
 	private double close;
 	private double high;
@@ -30,7 +29,7 @@ public class SharePrice {
 		this.shareId = shareId;
 		return this;
 	}
-	
+
 	public SharePriceId getSharePriceId() {
 		return sharePriceId;
 	}
@@ -40,14 +39,14 @@ public class SharePrice {
 		return this;
 	}
 
-	public Date getDate() {
+	public DateTime getDate() {
 		return date;
 	}
 
-	public SharePrice setDate(Date date) {
+	public SharePrice setDate(DateTime date) {
 		this.date = date;
 		return this;
-		
+
 	}
 
 	public double getOpen() {
@@ -106,7 +105,8 @@ public class SharePrice {
 
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(sharePriceId,
+		return Objects.hashCode(shareId,
+				sharePriceId,
 				date,
 				open,
 				close,
@@ -128,7 +128,8 @@ public class SharePrice {
 			return false;
 		}
 		SharePrice that = (SharePrice) obj;
-		return Objects.equal(this.sharePriceId, that.sharePriceId)
+		return Objects.equal(this.shareId, that.shareId)
+				&& Objects.equal(this.sharePriceId, that.sharePriceId)
 				&& Objects.equal(this.date, that.date)
 				&& Objects.equal(this.open, that.open)
 				&& Objects.equal(this.close, that.close)
@@ -140,6 +141,7 @@ public class SharePrice {
 
 	public String toString() {
 		return MoreObjects.toStringHelper(this.getClass())
+				.add("shareId", shareId)
 				.add("sharePriceId", sharePriceId)
 				.add("date", date)
 				.add("open", open)

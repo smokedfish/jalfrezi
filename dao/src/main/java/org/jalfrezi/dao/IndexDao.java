@@ -15,6 +15,7 @@ import org.jalfrezi.datamodel.id.IndexId;
 @Named
 public class IndexDao extends AbstractBaseDao {
 	private static final String TABLE_STATEMENT = "CREATE TABLE APP.INDEX (index_id VARCHAR(30) NOT NULL, name VARCHAR(30), PRIMARY KEY (index_id))";
+	private static final String TRUNCATE_STATEMENT = "TRUNCATE TABLE APP.INDEX";
 	private static final String CREATE_STATEMENT = "INSERT INTO APP.INDEX (index_id, name) VALUES (?, ?)";
 	private static final String READ_STATEMENT = "SELECT name FROM APP.INDEX WHERE index_id = ?";
 	private static final String UPDATE_STATEMENT = "UPDATE APP.INDEX SET name = ? WHERE index_id = ?";
@@ -39,6 +40,10 @@ public class IndexDao extends AbstractBaseDao {
 		this.deleteStatement = prepareStatement(DELETE_STATEMENT);
 	}
 
+	public void truncate() throws SQLException {
+		truncateTable(TRUNCATE_STATEMENT);
+	}
+
 	public void create(Index index) throws SQLException {
 		createStatement.clearParameters();
 		createStatement.setString(1, index.getIndexId().getId());
@@ -50,12 +55,17 @@ public class IndexDao extends AbstractBaseDao {
 		readStatement.clearParameters();
 		readStatement.setString(1, indexId.getId());
 		ResultSet resultSet = readStatement.executeQuery();
-		if (resultSet.next()) {
-			return new Index()
-			.setIndexId(indexId)
-			.setName(resultSet.getString(1));
+		try {
+			if (resultSet.next()) {
+				return new Index()
+						.setIndexId(indexId)
+						.setName(resultSet.getString(1));
+			}
+			return null;
 		}
-		return null;
+		finally {
+			resultSet.close();
+		}
 	}
 
 	public void update(Index index) throws SQLException {

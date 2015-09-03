@@ -2,6 +2,7 @@ package org.jalfrezi.datamodel;
 
 import org.jalfrezi.datamodel.id.IndexId;
 import org.jalfrezi.datamodel.id.ShareId;
+import org.joda.time.DateTime;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
@@ -10,6 +11,7 @@ public class Share {
 	private IndexId indexId;
 	private ShareId shareId;
 	private String name;
+	private DateTime lastFetch;
 
 	public Share() {
 	}
@@ -41,9 +43,18 @@ public class Share {
 		return this;
 	}
 
+	public DateTime getLastFetch() {
+		return lastFetch;
+	}
+
+	public Share setLastFetch(DateTime lastFetch) {
+		this.lastFetch = lastFetch;
+		return this;
+	}
+
 	@Override
 	public int hashCode() {
-		return Objects.hashCode(indexId, shareId, name);
+		return Objects.hashCode(indexId, shareId, name, lastFetch);
 	}
 
 	@Override
@@ -60,7 +71,8 @@ public class Share {
 		Share that = (Share) obj;
 		return Objects.equal(this.indexId, that.indexId)
 				&& Objects.equal(this.shareId, that.shareId)
-				&& Objects.equal(this.name, that.name);
+				&& Objects.equal(this.name, that.name)
+				&& Objects.equal(this.lastFetch, that.lastFetch);
 	}
 
 	public String toString() {
@@ -68,6 +80,7 @@ public class Share {
 	            .add("indexId", indexId)
 	            .add("shareId", shareId)
 	            .add("name", name)
+	            .add("lastFetch", lastFetch)
 	            .toString();
 	}
 }

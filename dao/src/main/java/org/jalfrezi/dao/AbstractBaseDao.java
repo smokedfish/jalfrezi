@@ -3,7 +3,6 @@ package org.jalfrezi.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import javax.inject.Inject;
 
@@ -15,11 +14,10 @@ public class AbstractBaseDao {
 	public AbstractBaseDao(Connection dbConnection) {
 		this.dbConnection = dbConnection;
 	}
-	
-	public void createTable(String tableStatement) throws SQLException {
+
+	public void createTable(String createTableStatement) throws SQLException {
 		try {
-			Statement statement = dbConnection.createStatement();
-			statement.execute(tableStatement);
+			dbConnection.createStatement().execute(createTableStatement);
 		}
 		catch (SQLException e) {
 			if (!tableAlreadyExists(e)) {
@@ -27,11 +25,26 @@ public class AbstractBaseDao {
 			}
 		}
 	}
-	
+
+	public void truncateTable(String truncateTableStatement) throws SQLException {
+		try {
+			dbConnection.createStatement().execute(truncateTableStatement);
+		}
+		catch (SQLException e) {
+			if (!tableDoesNotExist(e)) {
+				throw e;
+			}
+		}
+	}
+
 	public PreparedStatement prepareStatement(String statement) throws SQLException {
 		return dbConnection.prepareStatement(statement);
 	}
-	
+
+    public static boolean tableDoesNotExist(SQLException e) {
+        return e.getSQLState().equals("42Y55");
+    }
+
     public static boolean tableAlreadyExists(SQLException e) {
         return e.getSQLState().equals("X0Y32");
     }
