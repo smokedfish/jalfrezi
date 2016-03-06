@@ -5,7 +5,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.sql.SQLException;
-import java.util.Set;
+import java.util.List;
 
 import org.jalfrezi.datamodel.Share;
 import org.jalfrezi.datamodel.id.IndexId;
@@ -68,10 +68,10 @@ public class ShareDaoTest {
 		}
 		shareDao.create(new Share().setIndexId(new IndexId("index2")).setName("rob4").setShareId(new ShareId("4RSW.L")).setLastFetch(new DateTime()));
 
-		Set<ShareId> shareIdsFromDb = shareDao.findByIndexId(indexId);
-		assertEquals(shares.length, shareIdsFromDb.size());
+		List<Share> sharesFromDb = shareDao.findByIndexId(indexId);
+		assertEquals(shares.length, sharesFromDb.size());
 		for (Share share : shares) {
-			assertTrue(shareIdsFromDb.contains(share.getShareId()));
+			assertTrue(sharesFromDb.contains(share));
 		}
 	}
 }

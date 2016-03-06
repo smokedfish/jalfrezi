@@ -4,8 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -21,10 +21,10 @@ public class ShareDao extends AbstractBaseDao {
 	private static final String TABLE_STATEMENT = "CREATE TABLE APP.SHARE (share_id VARCHAR(30) NOT NULL, name VARCHAR(100), index_id VARCHAR(30) NOT NULL, last_fetch BIGINT, PRIMARY KEY (share_id))";
 	private static final String TRUNCATE_STATEMENT = "TRUNCATE TABLE APP.SHARE";
 	private static final String CREATE_STATEMENT = "INSERT INTO APP.SHARE (share_id, name, index_id, last_fetch) VALUES (?, ?, ?, ?)";
-	private static final String READ_STATEMENT = "SELECT name, index_id, last_fetch FROM APP.SHARE WHERE share_id = ?";
+	private static final String READ_STATEMENT = "SELECT share_id, name, index_id, last_fetch FROM APP.SHARE WHERE share_id = ?";
 	private static final String UPDATE_STATEMENT = "UPDATE APP.SHARE SET name = ?, index_id = ?, last_fetch = ? WHERE share_id = ?";
 	private static final String DELETE_STATEMENT = "DELETE FROM APP.SHARE WHERE share_id = ?";
-	private static final String FIND_ALL_STATEMENT = "SELECT share_id, name FROM APP.SHARE WHERE index_id = ?";
+	private static final String FIND_ALL_STATEMENT = "SELECT share_id, name, index_id, last_fetch FROM APP.SHARE WHERE index_id = ?";
 
 	private PreparedStatement createStatement;
 	private PreparedStatement updateStatement;
@@ -66,11 +66,7 @@ public class ShareDao extends AbstractBaseDao {
 		ResultSet resultSet = readStatement.executeQuery();
 		try {
 			if (resultSet.next()) {
-				return new Share()
-						.setShareId(shareId)
-						.setName(resultSet.getString(1))
-						.setIndexId(new IndexId(resultSet.getString(2)))
-						.setLastFetch((new DateTime(resultSet.getLong(3))));
+				return readOneRow(resultSet);
 			}
 			return null;
 		}
@@ -94,19 +90,27 @@ public class ShareDao extends AbstractBaseDao {
 		deleteStatement.executeUpdate();
 	}
 
-	public Set<ShareId> findByIndexId(IndexId indexId) throws SQLException {
+	public List<Share> findByIndexId(IndexId indexId) throws SQLException {
 		findByIndexIdStatement.clearParameters();
 		findByIndexIdStatement.setString(1, indexId.getId());
 		ResultSet resultSet = findByIndexIdStatement.executeQuery();
 		try {
-			Set<ShareId> shareIds = new HashSet<>();
+			List<Share> shares = new ArrayList<>();
 			while (resultSet.next()) {
-				shareIds.add(new ShareId(resultSet.getString(1)));
+				shares.add(readOneRow(resultSet));
 			}
-			return shareIds;
+			return shares;
 		}
 		finally {
 			resultSet.close();
 		}
+	}
+
+	private Share readOneRow(ResultSet resultSet) throws SQLException {
+		return new Share()
+			.setShareId(new ShareId(resultSet.getString(1)))
+			.setName(resultSet.getString(2))
+			.setIndexId(new IndexId(resultSet.getString(3)))
+			.setLastFetch((new DateTime(resultSet.getLong(4))));
 	}
 }

@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -19,14 +21,17 @@ public class SharePriceDao extends AbstractBaseDao {
 	private static final String TABLE_STATEMENT = "CREATE TABLE APP.SHARE_PRICE (share_id VARCHAR(30) NOT NULL, share_price_id VARCHAR(30) NOT NULL, date BIGINT, high DOUBLE, low DOUBLE, openx DOUBLE, closex DOUBLE, volume int, adj_close DOUBLE, PRIMARY KEY (share_id, share_price_id))";
 	private static final String TRUNCATE_STATEMENT = "TRUNCATE TABLE APP.SHARE_PRICE";
 	private static final String CREATE_STATEMENT = "INSERT INTO APP.SHARE_PRICE (share_id, share_price_id, date, high, low, openx, closex, volume, adj_close) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-	private static final String READ_STATEMENT = "SELECT date, high, low, openx, closex, volume, adj_close FROM APP.SHARE_PRICE WHERE share_id = ? AND share_price_id = ?";
+	private static final String READ_STATEMENT = "SELECT share_id, share_price_id, date, high, low, openx, closex, volume, adj_close FROM APP.SHARE_PRICE WHERE share_id = ? AND share_price_id = ?";
 	private static final String UPDATE_STATEMENT = "UPDATE APP.SHARE_PRICE SET date = ?, high = ?, low = ?, openx = ?, closex = ?, volume = ?, adj_close = ? WHERE share_id = ? AND share_price_id = ?";
 	private static final String DELETE_STATEMENT = "DELETE FROM APP.SHARE_PRICE WHERE share_id = ? AND share_price_id = ?";
+	private static final String FIND_ALL_STATEMENT = "SELECT share_id, share_price_id, date, high, low, openx, closex, volume, adj_close FROM APP.SHARE_PRICE WHERE share_id = ?";
+
 
 	private PreparedStatement createStatement;
 	private PreparedStatement updateStatement;
 	private PreparedStatement readStatement;
 	private PreparedStatement deleteStatement;
+	private PreparedStatement findByShareIdStatement;
 
 	@Inject
 	public SharePriceDao(Connection dbConnection) {
@@ -40,6 +45,7 @@ public class SharePriceDao extends AbstractBaseDao {
 		readStatement = prepareStatement(READ_STATEMENT);
 		updateStatement = prepareStatement(UPDATE_STATEMENT);
 		deleteStatement = prepareStatement(DELETE_STATEMENT);
+		findByShareIdStatement = prepareStatement(FIND_ALL_STATEMENT);
 	}
 
 	public void truncate() throws SQLException {
@@ -67,16 +73,7 @@ public class SharePriceDao extends AbstractBaseDao {
 		ResultSet resultSet = readStatement.executeQuery();
 		try {
 			if (resultSet.next()) {
-				return new SharePrice()
-						.setShareId(shareId)
-						.setSharePriceId(sharePriceId)
-						.setDate(new DateTime(resultSet.getLong(1)))
-						.setHigh(resultSet.getDouble(2))
-						.setLow(resultSet.getDouble(3))
-						.setOpen(resultSet.getDouble(4))
-						.setClose(resultSet.getDouble(5))
-						.setVolume(resultSet.getInt(6))
-						.setAdjClose(resultSet.getDouble(7));
+				return readOneRow(resultSet);
 			}
 			return null;
 		}
@@ -104,5 +101,34 @@ public class SharePriceDao extends AbstractBaseDao {
 		deleteStatement.setString(1, shareId.getId());
 		deleteStatement.setString(2, sharePriceId.getId());
 		deleteStatement.executeUpdate();
+	}
+
+	public List<SharePrice> findByShareId(ShareId shareId) throws SQLException {
+		findByShareIdStatement.clearParameters();
+		findByShareIdStatement.setString(1, shareId.getId());
+		ResultSet resultSet = findByShareIdStatement.executeQuery();
+		try {
+			List<SharePrice> sharePrices = new ArrayList<>();
+			while (resultSet.next()) {
+				sharePrices.add(readOneRow(resultSet));
+			}
+			return sharePrices;
+		}
+		finally {
+			resultSet.close();
+		}
+	}
+
+	private SharePrice readOneRow(ResultSet resultSet) throws SQLException {
+		return new SharePrice()
+				.setShareId(new ShareId(resultSet.getString(1)))
+				.setSharePriceId(new SharePriceId(resultSet.getString(2)))
+				.setDate(new DateTime(resultSet.getLong(3)))
+				.setHigh(resultSet.getDouble(4))
+				.setLow(resultSet.getDouble(5))
+				.setOpen(resultSet.getDouble(6))
+				.setClose(resultSet.getDouble(7))
+				.setVolume(resultSet.getInt(8))
+				.setAdjClose(resultSet.getDouble(9));
 	}
 }

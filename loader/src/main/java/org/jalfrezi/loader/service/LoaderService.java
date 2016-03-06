@@ -3,6 +3,7 @@ package org.jalfrezi.loader.service;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -59,12 +60,16 @@ public class LoaderService {
 		}
 		System.out.println(index);
 
-		resolve(indexId);
+		resolveShares(indexId);
+		resolveSharePrices(indexId, new DateTime());
 	}
 
-	public void resolve(IndexId indexId) throws IOException, SQLException, JsonProcessingException {
+	public void resolveShares(IndexId indexId) throws IOException, SQLException, JsonProcessingException {
 		Set<ShareId> shareIdsInIx = indexClient.findByIndexId(indexId);
-		Set<ShareId> shareIdsInDb = shareDao.findByIndexId(indexId);
+		Set<ShareId> shareIdsInDb = new HashSet<>();
+		for (Share share : shareDao.findByIndexId(indexId)) {
+			shareIdsInDb.add(share.getShareId());
+		}
 
 		List<ShareId> shareIdsToBeAdded = new ArrayList<>();
 		for (ShareId addToIndex : Sets.difference(shareIdsInIx, shareIdsInDb)) {
@@ -93,12 +98,12 @@ public class LoaderService {
 				shareDao.update(share);
 			}
 		}
+	}
 
-		for (ShareId shareId : shareDao.findByIndexId(indexId)) {
-			Share share = shareDao.read(shareId);
-			DateTime now = new DateTime();
+	public void resolveSharePrices(IndexId indexId, DateTime now) throws SQLException, JsonProcessingException, IOException {
+		for (Share share : shareDao.findByIndexId(indexId)) {
 			System.out.println(share);
-			for(SharePrice sharePrice : sharePriceClient.getSharePrices(shareId, share.getLastFetch(), now)) {
+			for(SharePrice sharePrice : sharePriceClient.getSharePrices(share.getShareId(), share.getLastFetch(), now)) {
 				System.out.println(sharePrice);
 				sharePriceDao.create(sharePrice);
 			}
